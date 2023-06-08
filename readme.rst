@@ -1,11 +1,12 @@
 ###################
-Ujian Pemrograman Web
+Latihan Pemrograman Web
 ###################
 
 -   Clone repositori
--   Hapus folder .git
--   Kemudian buat repo sendiri di github dari hasil clone repositori
--   Publish repo ke github
--   Nanti ketika ujian silahkan tinggal push
--   Untuk menjalankan aplikasi jangan lupa jalankan `composer install` dulu
--   Selamat ujian
+-   Jalankan perintah : composer install
+-   Copy file .env.example menjadi .env
+-   Sesuaikan dengan konfigurasi database
+-   Jalankan migrasi : php vendor/bin/phoenix migrate
+-   Jalankankan service : php -S localhost:8000
+-   Buka browser : localhost:8000
+-   Selamat mengerjakan
