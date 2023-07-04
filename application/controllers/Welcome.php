@@ -3,6 +3,8 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 use Jenssegers\Blade\Blade;
+use Orm\Post;
+use Orm\User;
 
 class Welcome extends CI_Controller
 {
@@ -37,26 +39,47 @@ class Welcome extends CI_Controller
 
     public function index()
     {
-        $this->_createView('form', []);
+       $avail_user = User::all();
+       $this->_createView('from', ['avail_user'=>$avail_user]);
     }
 
     public function simpan()
     {
-        $this->_createView('simpan', []);
+        
+        $username = $this->input->post('username');
+        $article = $this->input->post('artikel');
+        
+        $post = new Post();
+        $post->user_id = $username;
+        $post->article = $artikel;
+        $post->save();
+        
+        redirect('Welcome/tampil');
+
+        $this->_createView('tampil', []);
     }
 
     public function hapus()
     {
-        $this->_createView('hapus', []);
+        $post = Post::find($id);
+        
+        $post->delete();
+
+        redirect ('welcome/tampil');
     }
 
     public function ubah()
     {
-        $this->_createView('update', []);
+        $post = Post::find($id);
+        $post->user_id = $this->input->post('username');
+        $post->artikel = $this->inout->post('artikel');
+        $post->save();
+
+        redirect('welcome/tampil');
     }
 
     public function tampil()
     {
-        $this->_createView('tampil', []);
-    }
+        $post_list = Post::all();
+        $this->_createView('tampil', ['post_list' => $post_list]);
 }
