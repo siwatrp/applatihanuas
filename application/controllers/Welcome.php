@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 use Jenssegers\Blade\Blade;
+
 use Orm\Post;
 use Orm\User;
 
@@ -24,63 +25,82 @@ class Welcome extends CI_Controller
      * @see https://codeigniter.com/userguide3/general/urls.html
      */
     private $_blade;
-
+    
     // create construct
     public function __construct()
     {
         parent::__construct();
         $this->_blade = new Blade(VIEWPATH, APPPATH . 'cache');
     }
-
+    
     private function _createView($view, $data)
     {
         echo $this->_blade->make($view, $data)->render();
     }
-
+    
     public function index()
     {
-       $avail_user = User::all();
-       $this->_createView('from', ['avail_user'=>$avail_user]);
+        $user = User::all();
+        $this->_createView('form', ['user_list' => $user]);
     }
 
     public function simpan()
     {
         
-        $username = $this->input->post('username');
-        $article = $this->input->post('artikel');
-        
-        $post = new Post();
-        $post->user_id = $username;
-        $post->article = $artikel;
-        $post->save();
+        if ($this->input->post()){
+            $user_id = $this->input->post('user_id');
+            $article = $this->input->post('article');
+            $jenis = $this->input->post('radio');
+            
+            $post = new Post();
+    
+            $post->user_id = $user_id;
+            $post->article = $article;
+            $post->jenis = $jenis;
+            $post->save();
+        }
+
+        redirect('Welcome/index');
+    }
+
+    public function hapus($id)
+    {
+        $del = Post::find($id);
+        $del->delete();
         
         redirect('Welcome/tampil');
-
-        $this->_createView('tampil', []);
     }
 
-    public function hapus()
+    public function edit($id)
     {
         $post = Post::find($id);
-        
-        $post->delete();
+        $users = User::all();
 
-        redirect ('welcome/tampil');
+        $jenis = 0;
+        if($post->jenis == 'Berita') $jenis = 0;
+        else if($post->jenis == 'Tutorial') $jenis = 1;
+        else if($post->jenis == 'Blog') $jenis = 2;
+
+        $this->_createView('update', ['post' => $post, 'users' => $users, 'jenis' => $jenis]);
     }
 
-    public function ubah()
+    public function update($id)
     {
         $post = Post::find($id);
-        $post->user_id = $this->input->post('username');
-        $post->artikel = $this->inout->post('artikel');
+        $post->user_id = $this->input->post('user_id');
+        $post->article = $this->input->post('article');
+        $post->jenis = $this->input->post('radio');
+
         $post->save();
 
-        redirect('welcome/tampil');
+        redirect('Welcome/tampil');
     }
+
 
     public function tampil()
     {
         $post_list = Post::all();
+
         $this->_createView('tampil', ['post_list' => $post_list]);
-}
+    }
 }

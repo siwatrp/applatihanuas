@@ -1,12 +1,13 @@
 <?php
+
 namespace Orm;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model{
-    protected $table ='post';
+class Post extends Model {
+    protected $table = 'post';
 
-    public function user(){
+    public function user() {
         return $this->belongsTo(User::class);
     }
 }
